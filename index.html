@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tuition Access Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+
+  <body class="bg-gray-100 min-h-screen flex items-center justify-center">
+    <div class="bg-white shadow-lg rounded-2xl p-8 w-full max-w-md">
+      <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">
+        Tuition Access Portal
+      </h2>
+
+      <p class="text-sm text-gray-500 text-center mb-6">
+        Sila masukkan nombor IC untuk menyemak status bayaran.
+      </p>
+
+      <div class="space-y-4">
+        <input
+          type="text"
+          id="icNumber"
+          placeholder="Contoh: 900101011234"
+          class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+
+        <button
+          onclick="checkPayment()"
+          class="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition"
+        >
+          Semak Status
+        </button>
+      </div>
+
+      <div id="message" class="mt-6 text-center text-sm"></div>
+    </div>
+
+    <script>
+      async function checkPayment() {
+        const ic = document.getElementById("icNumber").value;
+        const msg = document.getElementById("message");
+
+        msg.innerHTML = "";
+
+        if (!ic) {
+          msg.innerHTML =
+            '<p class="text-red-500 font-medium">Sila masukkan nombor IC</p>';
+          return;
+        }
+
+        const url =
+          "https://script.google.com/macros/s/AKfycbxsuXRe7rAzB9DfQZqd433eF5RlsPcXUxUEUtA1pTfOg_V_kYPH67rfGwIvEytjPEZ5/exec?ic=" +
+          ic;
+
+        try {
+          const response = await fetch(url);
+          const data = await response.json();
+
+          if (data.status === "Dibayar") {
+            msg.innerHTML = `
+              <p class="text-green-600 font-semibold mb-3">
+                Bayaran telah dijelaskan
+              </p>
+              <a 
+                href="https://docs.google.com/forms/d/e/1FAIpQLSeFXvfvjXZJXGDrz4aTYOG4-Whd44Ysh2uGb0BhofzZvEGDMg/viewform?usp=publish-editor"
+                target="_blank"
+                class="inline-block bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
+              >
+                Buka Google Form
+              </a>
+            `;
+          } else if (data.status === "Tertunggak") {
+            msg.innerHTML =
+              '<p class="text-red-500 font-medium">Sila jelaskan tunggakan bayaran dahulu</p>';
+          } else {
+            msg.innerHTML =
+              '<p class="text-red-500 font-medium">IC tidak dijumpai</p>';
+          }
+        } catch (error) {
+          msg.innerHTML =
+            '<p class="text-red-500 font-medium">Ralat semasa menyemak data</p>';
+        }
+      }
+    </script>
+  </body>
+</html>
