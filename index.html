@@ -57,7 +57,7 @@
           const response = await fetch(url);
           const data = await response.json();
 
-          if (data.status === "Dibayar") {
+          if (data.status === "Paid") {
             msg.innerHTML = `
               <p class="text-green-600 font-semibold mb-3">
                 Bayaran telah dijelaskan
@@ -70,7 +70,7 @@
                 Buka Google Form
               </a>
             `;
-          } else if (data.status === "Tertunggak") {
+          } else if (data.status === "Unpaid") {
             msg.innerHTML =
               '<p class="text-red-500 font-medium">Sila jelaskan tunggakan bayaran dahulu</p>';
           } else {
